@@ -6,8 +6,9 @@
 #include <string>
 
 #include "taskcreator.h"
+#include "taskexecutor.h"
 
-static std::shared_ptr<TaskCreator> parseInputArguments(int argc, char *argv[])
+void parseInputArguments(int argc, char *argv[], std::string &taskNumber)
 {
 	std::shared_ptr<TaskCreator> taskCreator;
 
@@ -19,9 +20,14 @@ static std::shared_ptr<TaskCreator> parseInputArguments(int argc, char *argv[])
 		}
 		std::string inArg(argv[i]);
 		if (!inArg.compare("-t")) {
-			float taskNumberFloat = std::atof(argv[i+1]);
-			int taskNumber = (int)(taskNumberFloat * 10);
+			std::stringstream ss;
+			ss << argv[i+1];
+			ss >> taskNumber;
 			taskCreator = TaskCreator::getInstance(taskNumber);
+			if (taskCreator == nullptr) {
+				std::cout << "No task created" << std::endl;
+				exit(1);
+			}
 			break;
 		}
 	}
@@ -36,13 +42,13 @@ static std::shared_ptr<TaskCreator> parseInputArguments(int argc, char *argv[])
 			taskCreator->setFilename(fileName);
 		}
 	}
-
-	return taskCreator;
 }
 
 int main(int argc, char *argv[])
 {
-	static std::shared_ptr<TaskCreator> task = parseInputArguments(argc, argv);
-	task->execute();
+	std::string taskNumber;
+	parseInputArguments(argc, argv, taskNumber);
+	static std::unique_ptr<TaskExecutor> exec = TaskExecutor::getInstance();
+	exec->execute(taskNumber);
 	exit(0);
 }
