@@ -1,20 +1,20 @@
-#ifndef TASK20_H
-#define TASK20_H
+#ifndef TASK21_H
+#define TASK21_H
 
 #include <sstream>
 
 #include "taskcreator.h"
 #include "taskexecutor.h"
 
-class Task20 : public TaskExecutor
+class Task21 : public TaskExecutor
 {
 	static bool _creatorRegistered;
 	static bool _executorRegistered;
 public:
-	Task20() {}
-	~Task20() {}
+	Task21() {}
+	~Task21() {}
 	static TaskCreator* create();
 	static void execute();
 };
 
-#endif // TASK20_H
+#endif // TASK21_H

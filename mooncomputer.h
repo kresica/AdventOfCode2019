@@ -9,10 +9,12 @@
 //                 -> first = position
 //                 -> second = value
 typedef std::map<int, int> mangler_t;
+typedef std::vector<int> program_t;
 
 class MoonComputer
 {
-	static std::vector<int> _program;
+	static program_t _program;
+	static bool _verbose;
 public:
 	MoonComputer() {}
 	~MoonComputer() {}
@@ -21,7 +23,9 @@ public:
 			       const int second, const int result);
 	static void mangleTheCode(const mangler_t &mangler);
 	static int runMoonProgram();
-	static void uploadProgramToComputer(const std::vector<int> &program);
+	static int runMoonProgram(int &programResult);
+	static void uploadProgramToComputer(program_t &program) { _program = program; }
+	static void setVerbose(bool flag) { _verbose = flag; }
 };
 
 #endif // MOONCOMPUTER_H

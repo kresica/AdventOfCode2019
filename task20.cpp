@@ -1,8 +1,6 @@
 #include "task20.h"
 #include "mooncomputer.h"
 
-#include <ios>
-
 REGISTER_TASK_TO_CREATOR(Task20, 2.0)
 REGISTER_TASK_TO_EXECUTOR(Task20, 2.0)
 
@@ -16,7 +14,7 @@ void Task20::execute()
 	std::ifstream iFile;
 	std::stringbuf sb;
 
-	std::vector<int> program;
+	program_t program;
 
 	openFile(iFile);
 	while (!iFile.eof()) {
