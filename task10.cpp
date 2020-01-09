@@ -1,10 +1,7 @@
 #include "task10.h"
 
-REGISTER_TASK_TO_CREATOR(Task10, "1.0")
-REGISTER_TASK_TO_EXECUTOR(Task10, "1.0")
-
-//bool Task10::_creatorRegistered = TaskCreator::registerTask("1.0", Task10::create());
-//bool Task10::_executorRegistered = TaskExecutor::registerTask("1.0", Task10::execute);
+REGISTER_TASK_TO_CREATOR(Task10, 1.0)
+REGISTER_TASK_TO_EXECUTOR(Task10, 1.0)
 
 TaskCreator* Task10::create()
 {
@@ -15,17 +12,16 @@ void Task10::execute()
 {
 	unsigned int mass;
 	unsigned int fuelMassSum = 0;
-	std::vector<std::unique_ptr<SpaceModule>> moduleVec;
+	std::vector<unsigned int> moduleVec;
 	std::ifstream iFile;
 
 	openFile(iFile);
 	while (iFile >> mass) {
-		std::unique_ptr<SpaceModule> mod(new SpaceModule(mass));
-		moduleVec.push_back(std::move(mod));
+		moduleVec.push_back(mass);
 	}
 
 	for (unsigned int i = 0; i < moduleVec.size(); ++i) {
-		fuelMassSum += moduleVec[i]->getMass() / 3 - 2;
+		fuelMassSum += moduleVec[i] / 3 - 2;
 	}
 
 	std::cout << "Mass of all modules is: " << fuelMassSum << std::endl;

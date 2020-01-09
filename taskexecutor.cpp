@@ -28,10 +28,9 @@ std::unique_ptr<TaskExecutor> TaskExecutor::getInstance()
 void TaskExecutor::openFile(std::ifstream &fileHandle)
 {
 	std::string fileName = TaskCreator::getFilename();
-	std::cout << "File to open: " << fileName << std::endl;
 	fileHandle.open(fileName);
 	if (!fileHandle) {
-		std::cout << "Unable to open file" << std::endl;
+		std::cout << "Unable to open file" << fileName << std::endl;
 		exit(1);
 	}
 }
