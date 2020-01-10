@@ -1,8 +1,5 @@
 #include "wireboard.h"
 
-std::list<coordinate_t> WireBoard::_wirePath;
-coordinate_t WireBoard::_currentPos;
-
 void WireBoard::updatePosition(const char direction)
 {
 	if (direction == 'U') {
@@ -29,13 +26,13 @@ int WireBoard::populateBoard(wire_t& wire)
 		}
 		for (; distance != 0; --distance) {
 			WireBoard::updatePosition((*it)[0]);
-			_wirePath.push_back(_currentPos);
+			_wirePath->push_back(_currentPos);
 		}
 	}
 	return 0;
 }
 
-std::unique_ptr<path_t> WireBoard::getWirePath()
+std::shared_ptr<path_t> WireBoard::getWirePath() const
 {
-	return std::unique_ptr<path_t>(&_wirePath);
+	return _wirePath;
 }

@@ -30,7 +30,7 @@ void TaskExecutor::openFile(std::ifstream& fileHandle)
 	std::string fileName = TaskCreator::getFilename();
 	fileHandle.open(fileName);
 	if (!fileHandle) {
-		std::cout << "Unable to open file" << fileName << std::endl;
+		std::cout << "Unable to open file " << fileName << std::endl;
 		exit(1);
 	}
 }

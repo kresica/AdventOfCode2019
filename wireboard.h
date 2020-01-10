@@ -6,7 +6,7 @@
 #include <vector>
 #include <list>
 
-struct coordinate_t {
+typedef struct coordinate_t {
 	int xPos;
 	int yPos;
 
@@ -16,23 +16,26 @@ struct coordinate_t {
 	{
 		return (coordinate.xPos == xPos && coordinate.yPos == yPos);
 	}
-};
-
-typedef struct coordinate_t coordinate_t;
+	friend std::ostream& operator<<(std::ostream& os, const coordinate_t& coor)
+	{
+		os << coor.xPos << "," << coor.yPos;
+		return os;
+	}
+} coordinate_t;
 typedef std::vector<std::string> wire_t;
 typedef std::list<coordinate_t> path_t;
 
 class WireBoard
 {
-	static path_t _wirePath;
-	static coordinate_t _currentPos;
+	std::shared_ptr<path_t> _wirePath = std::shared_ptr<path_t>(new path_t);
+	coordinate_t _currentPos;
 
-	static void updatePosition(const char position);
+	void updatePosition(const char position);
 public:
 	WireBoard() {}
 	~WireBoard() {}
-	static int populateBoard(wire_t& wire);
-	static std::unique_ptr<path_t> getWirePath();
+	int populateBoard(wire_t& wire);
+	std::shared_ptr<path_t> getWirePath() const;
 };
 
 #endif // WIREBOARD_H
