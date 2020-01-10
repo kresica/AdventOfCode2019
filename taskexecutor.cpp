@@ -25,7 +25,7 @@ std::unique_ptr<TaskExecutor> TaskExecutor::getInstance()
 	return std::unique_ptr<TaskExecutor>(new TaskExecutor);
 }
 
-void TaskExecutor::openFile(std::ifstream &fileHandle)
+void TaskExecutor::openFile(std::ifstream& fileHandle)
 {
 	std::string fileName = TaskCreator::getFilename();
 	fileHandle.open(fileName);

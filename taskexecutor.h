@@ -20,7 +20,7 @@ public:
 	~TaskExecutor() {}
 	static bool registerTask(std::string taskName, void executeFunc());
 	static std::unique_ptr<TaskExecutor> getInstance();
-	static void openFile(std::ifstream &fileHandle);
+	static void openFile(std::ifstream& fileHandle);
 	static void execute(std::string taskNumber);
 };
 

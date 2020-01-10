@@ -52,7 +52,7 @@ int MoonComputer::doOperation(const int op, const int first,
 	}
 }
 
-void MoonComputer::mangleTheCode(const mangler_t &mangler)
+void MoonComputer::mangleTheCode(const mangler_t& mangler)
 {
 	for (mangler_t::const_iterator it = mangler.begin(); it != mangler.end(); ++it) {
 		_program[it->first] = it->second;
@@ -65,7 +65,7 @@ int MoonComputer::runMoonProgram()
 	return MoonComputer::runMoonProgram(result);
 }
 
-int MoonComputer::runMoonProgram(int &programResult)
+int MoonComputer::runMoonProgram(int& programResult)
 {
 	int operation;
 	int firstOperand;

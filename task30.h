@@ -1,10 +1,11 @@
 #ifndef TASK30_H
 #define TASK30_H
 
+#include <algorithm>
+
 #include "taskcreator.h"
 #include "taskexecutor.h"
-
-typedef std::vector<std::string> wire_t;
+#include "wireboard.h"
 
 class Task30 : public TaskExecutor
 {

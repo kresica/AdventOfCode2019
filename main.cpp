@@ -7,7 +7,7 @@
 #include "taskcreator.h"
 #include "taskexecutor.h"
 
-void parseInputArguments(int argc, char *argv[], std::string &taskNumber)
+void parseInputArguments(int argc, char *argv[], std::string& taskNumber)
 {
 	std::shared_ptr<TaskCreator> taskCreator;
 

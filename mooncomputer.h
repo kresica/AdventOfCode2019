@@ -21,10 +21,10 @@ public:
 	static void printProgramSnapshot();
 	static int doOperation(const int op, const int first,
 			       const int second, const int result);
-	static void mangleTheCode(const mangler_t &mangler);
+	static void mangleTheCode(const mangler_t& mangler);
 	static int runMoonProgram();
-	static int runMoonProgram(int &programResult);
-	static void uploadProgramToComputer(program_t &program) { _program = program; }
+	static int runMoonProgram(int& programResult);
+	static void uploadProgramToComputer(program_t& program) { _program = program; }
 	static void setVerbose(bool flag) { _verbose = flag; }
 };
 

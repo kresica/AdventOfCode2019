@@ -30,7 +30,7 @@ std::shared_ptr<TaskCreator> TaskCreator::getInstance(std::string taskNumber)
 		_taskNumber = taskNumber;
 	}
 	if (_instance == nullptr) {
-		_instance = &createTask(taskNumber);
+		_instance =& createTask(taskNumber);
 	}
 
 	if (taskNumber == _taskNumber)
