@@ -23,22 +23,12 @@ static void makeWireVector(std::string& wireString, wire_t& wireVector)
 	}
 }
 
-static bool sortWirePath(const coordinate_t& next, const coordinate_t& prev)
+static bool sortWirePath(const coordinate_t& prev, const coordinate_t& next)
 {
 	if (prev.xPos == next.xPos) {
-		if (prev.yPos <= next.yPos) {
-			return true;
-		}
-		else {
-			return false;
-		}
+		return (prev.yPos <= next.yPos);
 	}
-	else if (prev.xPos < next.xPos) {
-		return true;
-	}
-	else {
-		return false;
-	}
+	return (prev.xPos < next.xPos);
 }
 
 static void checkForCollisions(const WireBoard& firstBoard,
@@ -55,15 +45,21 @@ static void checkForCollisions(const WireBoard& firstBoard,
 	secondWirePath->sort(sortWirePath);
 
 	for (path_t::iterator it1 = firstWirePath->begin(); it1 != firstWirePath->end(); ++it1) {
-		for (path_t::iterator it2 = secondWirePath->begin(); it2 != secondWirePath->end(); ++it2) {
+		for (path_t::iterator it2 = secondWirePath->begin(); it2 != secondWirePath->end();) {
 			if ((*it1).xPos > (*it2).xPos) {
-				break;
+				secondWirePath->pop_front();
+				it2 = secondWirePath->begin();
+				continue;
 			}
 			else if ((*it1).xPos == (*it2).xPos) {
 				if ((*it1).yPos == (*it2).yPos) {
 					collisions.push_back(*it1);
 				}
+				else if ((*it1).yPos < (*it2).yPos) {
+					break;
+				}
 			}
+			++it2;
 		}
 	}
 }
