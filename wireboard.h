@@ -5,6 +5,8 @@
 #include <memory>
 #include <vector>
 #include <list>
+#include <string>
+#include <algorithm>
 
 typedef struct coordinate_t {
 	int xPos;
@@ -36,6 +38,9 @@ public:
 	~WireBoard() {}
 	int populateBoard(wire_t& wire);
 	std::shared_ptr<path_t> getWirePath() const;
+	void makeWireVector(const std::string& wireString, wire_t& wireVector);
+	void checkForCollisions(const WireBoard& otherBoard, std::list<coordinate_t>& collisions);
+	long long findNearestCrossing(const path_t& otherWirePath, const std::list<coordinate_t>& collisions);
 };
 
 #endif // WIREBOARD_H

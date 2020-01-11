@@ -1,14 +1,14 @@
-#include "task30.h"
+#include "task31.h"
 
-REGISTER_TASK_TO_CREATOR(Task30, 3.0)
-REGISTER_TASK_TO_EXECUTOR(Task30, 3.0)
+REGISTER_TASK_TO_CREATOR(Task31, 3.1)
+REGISTER_TASK_TO_EXECUTOR(Task31, 3.1)
 
-TaskCreator* Task30::create()
+TaskCreator* Task31::create()
 {
-	return new Task30();
+	return new Task31();
 }
 
-void Task30::execute()
+void Task31::execute()
 {
 	std::ifstream iFile;
 	std::string firstWireInput;
@@ -39,13 +39,10 @@ void Task30::execute()
 
 	std::list<coordinate_t> collisions;
 	firstBoard_o->checkForCollisions(*secondBoard_o, collisions);
-
-	int shortestDistanceFromOrigin = 0;
-	for (std::list<coordinate_t>::iterator it = collisions.begin(); it != collisions.end(); ++it) {
-		int distanceFromOrigin = abs((*it).xPos) + abs((*it).yPos);
-		if (!shortestDistanceFromOrigin || distanceFromOrigin < shortestDistanceFromOrigin) {
-			shortestDistanceFromOrigin = distanceFromOrigin;
-		}
-	}
-	std::cout << "Shortest cross-point distance: " << shortestDistanceFromOrigin << std::endl;
+	path_t wir = *secondBoard_o->getWirePath();
+	std::cout << "Nearest crossing is "
+		  << firstBoard_o->findNearestCrossing(wir, collisions)
+		  << " points away" << std::endl;
+	return;
 }
+
