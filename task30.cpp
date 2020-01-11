@@ -58,8 +58,11 @@ static void checkForCollisions(const WireBoard& firstBoard,
 				else if ((*it1).yPos < (*it2).yPos) {
 					break;
 				}
+				++it2;
 			}
-			++it2;
+			else {
+				break;
+			}
 		}
 	}
 }

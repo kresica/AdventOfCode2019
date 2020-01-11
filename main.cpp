@@ -3,6 +3,7 @@
 #include <vector>
 #include <memory>
 #include <string>
+#include <chrono>
 
 #include "taskcreator.h"
 #include "taskexecutor.h"
@@ -45,9 +46,16 @@ void parseInputArguments(int argc, char *argv[], std::string& taskNumber)
 
 int main(int argc, char *argv[])
 {
+	auto start = std::chrono::high_resolution_clock::now();
+
 	std::string taskNumber;
 	parseInputArguments(argc, argv, taskNumber);
 	static std::unique_ptr<TaskExecutor> exec = TaskExecutor::getInstance();
 	exec->execute(taskNumber);
+
+	auto stop = std::chrono::high_resolution_clock::now();
+	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+
+	std::cout << "Program duration: " << duration.count() << " ms" << std::endl;
 	exit(0);
 }
