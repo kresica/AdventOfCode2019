@@ -27,6 +27,7 @@ void Task20::execute()
 		sb.str().clear();
 	}
 
+	MoonComputer::setVerbose(false);
 	MoonComputer::uploadProgramToComputer(program);
 
 	mangler_t mangler;
@@ -34,8 +35,10 @@ void Task20::execute()
 	mangler.insert(std::pair<int, int>(2, 2));
 	MoonComputer::mangleTheCode(mangler);
 
-	if (!MoonComputer::runMoonProgram()) {
-		exit(0);
+	int programResult;
+	if (!MoonComputer::runMoonProgram(programResult)) {
+		std::cout << "First program entry: " << programResult << std::endl;
+		return;
 	}
 	exit(1);
 }

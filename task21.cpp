@@ -45,7 +45,7 @@ void Task21::execute()
 			if (programResult == 19690720) {
 				std::cout << "Got correct parameters:" << std::endl;
 				std::cout << "100 * noun + verb = " << 100 * i + j << std::endl;
-				exit(0);
+				return;
 			}
 		}
 	}
