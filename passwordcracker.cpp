@@ -10,17 +10,14 @@ void PasswordCracker::populateRange(std::array<int,6>& rangeArray, std::string& 
 
 void PasswordCracker::incrementNumber(std::array<int,6>& number)
 {
-	bool increaseNextLevel = true;
 	for (auto it = number.rbegin(); it != number.rend(); ++it) {
-		if (increaseNextLevel && (*it != 9)) {
+		if (*it != 9) {
 			++(*it);
 		}
 		else {
 			(*it) = 0;
-			increaseNextLevel = true;
 			continue;
 		}
-		increaseNextLevel = false;
 		break;
 	}
 }
