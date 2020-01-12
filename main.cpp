@@ -41,6 +41,13 @@ void parseInputArguments(int argc, char *argv[], std::string& taskNumber)
 			ss >> fileName;
 			taskCreator->setFilename(fileName);
 		}
+		if (!inArg.compare("-e")) {
+			std::string entryValue;
+			std::stringstream ss;
+			ss << argv[i+1];
+			ss >> entryValue;
+			taskCreator->setEntryValue(entryValue);
+		}
 	}
 }
 
@@ -50,7 +57,7 @@ int main(int argc, char *argv[])
 
 	std::string taskNumber;
 	parseInputArguments(argc, argv, taskNumber);
-	static std::unique_ptr<TaskExecutor> exec = TaskExecutor::getInstance();
+	static std::shared_ptr<TaskExecutor> exec = TaskExecutor::getInstance();
 	exec->execute(taskNumber);
 
 	auto stop = std::chrono::high_resolution_clock::now();

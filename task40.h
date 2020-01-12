@@ -1,20 +1,18 @@
-#ifndef TASK30_H
-#define TASK30_H
-
-#include <algorithm>
+#ifndef TASK40_H
+#define TASK40_H
 
 #include "taskexecutor.h"
-#include "wireboard.h"
+#include "passwordcracker.h"
 
-class Task30 : public TaskExecutor, public TaskCreator
+class Task40 : public TaskExecutor, public TaskCreator
 {
 	static bool _creatorRegistered;
 	static bool _executorRegistered;
 public:
-	Task30() {}
-	~Task30() {}
+	Task40() {}
+	~Task40() {}
 	static std::shared_ptr<TaskCreator> create();
 	static void execute();
 };
 
-#endif // TASK30_H
+#endif // TASK40_H

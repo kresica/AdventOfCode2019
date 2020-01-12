@@ -9,7 +9,7 @@ void MoonComputer::printProgramSnapshot()
 		return;
 	}
 	std::cout << "1. ";
-	for (program_t::iterator pc = _program.begin(); pc != _program.end(); ++pc)
+	for (auto pc = _program.begin(); pc != _program.end(); ++pc)
 	{
 		std::cout << *pc;
 		if (std::distance(_program.begin(), pc) % 4 == 3) {
@@ -73,7 +73,7 @@ int MoonComputer::runMoonProgram(int& programResult)
 	int result;
 	int ret;
 
-	for (program_t::iterator pc = _program.begin(); pc != _program.end(); ++pc) {
+	for (auto pc = _program.begin(); pc != _program.end(); ++pc) {
 		if ((pc - _program.begin()) % 4 == 0) {
 			operation = _program.at(pc - _program.begin());
 		}

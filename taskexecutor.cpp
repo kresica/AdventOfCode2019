@@ -3,6 +3,7 @@
 // -----------------------------------------------------------------
 // Default static members definitions
 // -----------------------------------------------------------------
+std::shared_ptr<TaskExecutor> TaskExecutor::_instance = nullptr;
 std::map<std::string, void (*)()> TaskExecutor::_taskMap;
 
 // -----------------------------------------------------------------
@@ -10,8 +11,7 @@ std::map<std::string, void (*)()> TaskExecutor::_taskMap;
 // -----------------------------------------------------------------
 bool TaskExecutor::registerTask(std::string taskName, void executeFunc())
 {
-	std::map<std::string, void (*)()>::iterator it;
-	it = _taskMap.find(taskName);
+	auto it = _taskMap.find(taskName);
 
 	if (it == _taskMap.end()) {
 		_taskMap[taskName] = executeFunc;
@@ -20,9 +20,12 @@ bool TaskExecutor::registerTask(std::string taskName, void executeFunc())
 	return false;
 }
 
-std::unique_ptr<TaskExecutor> TaskExecutor::getInstance()
+std::shared_ptr<TaskExecutor> TaskExecutor::getInstance()
 {
-	return std::unique_ptr<TaskExecutor>(new TaskExecutor);
+	if (_instance == nullptr) {
+		_instance = static_cast<std::shared_ptr<TaskExecutor>>(new TaskExecutor());
+	}
+	return _instance;
 }
 
 void TaskExecutor::openFile(std::ifstream& fileHandle)
@@ -37,8 +40,7 @@ void TaskExecutor::openFile(std::ifstream& fileHandle)
 
 void TaskExecutor::execute(std::string taskNumber)
 {
-	std::map<std::string, void (*)()>::iterator it;
-	it = _taskMap.find(taskNumber);
+	auto it = _taskMap.find(taskNumber);
 
 	if (it == _taskMap.end()) {
 		std::cout << "Unable to execute task, task " << taskNumber

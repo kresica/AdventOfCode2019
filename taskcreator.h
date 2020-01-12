@@ -14,19 +14,22 @@
 class TaskCreator
 {
 private:
-	static TaskCreator* _instance;
+	static std::shared_ptr<TaskCreator> _instance;
 	static std::string _taskNumber;
 	static std::string _fileName;
-	static std::map<std::string, TaskCreator*> _taskMap;
+	static std::map<std::string, std::shared_ptr<TaskCreator>> _taskMap;
+	static std::string _entryValue;
 
-	static TaskCreator& createTask(std::string taskNumber);
+	static std::shared_ptr<TaskCreator> createTask(std::string taskNumber);
 
 public:
 	static std::shared_ptr<TaskCreator> getInstance(std::string taskNumber);
 	static std::string getTaskNumber();
-	static bool registerTask(std::string taskName, TaskCreator *createFunc);
+	static bool registerTask(std::string taskName, std::shared_ptr<TaskCreator> createFunc);
 	static void setFilename(std::string fileName);
 	static std::string getFilename();
+	static void setEntryValue(std::string entryValue);
+	static std::string getEntryValue();
 };
 
 #endif // TASKCREATOR_H

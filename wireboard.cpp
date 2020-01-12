@@ -26,7 +26,7 @@ void WireBoard::updatePosition(const char direction)
 
 int WireBoard::populateBoard(wire_t& wire)
 {
-	for (wire_t::iterator it = wire.begin(); it < wire.end(); ++it) {
+	for (auto it = wire.begin(); it < wire.end(); ++it) {
 		int distance = std::stoi((*it).substr(1, (*it).size()-1));
 		if (distance < 0) {
 			std::cout << "Wrong distance given, can't be negative" << std::endl;
@@ -72,8 +72,8 @@ void WireBoard::checkForCollisions(const WireBoard& otherBoard, std::list<coordi
 	firstWirePathSorted->sort(sortWirePath);
 	secondWirePathSorted->sort(sortWirePath);
 
-	for (path_t::iterator it1 = firstWirePathSorted->begin(); it1 != firstWirePathSorted->end(); ++it1) {
-		for (path_t::iterator it2 = secondWirePathSorted->begin(); it2 != secondWirePathSorted->end();) {
+	for (auto it1 = firstWirePathSorted->begin(); it1 != firstWirePathSorted->end(); ++it1) {
+		for (auto it2 = secondWirePathSorted->begin(); it2 != secondWirePathSorted->end();) {
 			if ((*it1).xPos > (*it2).xPos) {
 				secondWirePathSorted->pop_front();
 				it2 = secondWirePathSorted->begin();

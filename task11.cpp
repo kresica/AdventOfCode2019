@@ -3,9 +3,9 @@
 REGISTER_TASK_TO_CREATOR(Task11, 1.1)
 REGISTER_TASK_TO_EXECUTOR(Task11, 1.1)
 
-TaskCreator* Task11::create()
+std::shared_ptr<TaskCreator> Task11::create()
 {
-	return new Task11();
+	return std::shared_ptr<TaskCreator>(new Task11());
 }
 
 static int calculateFuelMassRecursive(int mass)

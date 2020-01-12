@@ -4,10 +4,11 @@
 REGISTER_TASK_TO_CREATOR(Task21, 2.1)
 REGISTER_TASK_TO_EXECUTOR(Task21, 2.1)
 
-TaskCreator* Task21::create()
+std::shared_ptr<TaskCreator> Task21::create()
 {
-	return new Task21();
+	return std::shared_ptr<TaskCreator>(new Task21());
 }
+
 
 void Task21::execute()
 {

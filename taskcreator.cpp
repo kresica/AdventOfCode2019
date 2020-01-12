@@ -3,25 +3,25 @@
 // -----------------------------------------------------------------
 // Default static members definitions
 // -----------------------------------------------------------------
-TaskCreator* TaskCreator::_instance = nullptr;
+std::shared_ptr<TaskCreator> TaskCreator::_instance = nullptr;
 std::string TaskCreator::_taskNumber = "";
 std::string TaskCreator::_fileName = "";
-std::map<std::string, TaskCreator*> TaskCreator::_taskMap;
+std::map<std::string, std::shared_ptr<TaskCreator>> TaskCreator::_taskMap;
+std::string TaskCreator::_entryValue = "";
 
 // -----------------------------------------------------------------
 // Member functions
 // -----------------------------------------------------------------
-TaskCreator& TaskCreator::createTask(std::string taskNumber)
+std::shared_ptr<TaskCreator> TaskCreator::createTask(std::string taskNumber)
 {
-	std::map<std::string, TaskCreator*>::iterator it;
-	it = _taskMap.find(taskNumber);
+	auto it = _taskMap.find(taskNumber);
 
 	if (it == _taskMap.end()) {
 		std::cout << "Unable to create task, task " << taskNumber
 			  << " not found in map" << std::endl;
 		exit(1);
 	}
-	return *(it->second);
+	return it->second;
 }
 
 std::shared_ptr<TaskCreator> TaskCreator::getInstance(std::string taskNumber)
@@ -30,7 +30,7 @@ std::shared_ptr<TaskCreator> TaskCreator::getInstance(std::string taskNumber)
 		_taskNumber = taskNumber;
 	}
 	if (_instance == nullptr) {
-		_instance =& createTask(taskNumber);
+		_instance = createTask(taskNumber);
 	}
 
 	if (taskNumber == _taskNumber)
@@ -43,10 +43,9 @@ std::string TaskCreator::getTaskNumber()
 	return _taskNumber;
 }
 
-bool TaskCreator::registerTask(std::string taskName, TaskCreator* createFunc)
+bool TaskCreator::registerTask(std::string taskName, std::shared_ptr<TaskCreator> createFunc)
 {
-	std::map<std::string, TaskCreator*>::iterator it;
-	it = _taskMap.find(taskName);
+	auto it = _taskMap.find(taskName);
 
 	if (it == _taskMap.end()) {
 		_taskMap[taskName] = createFunc;
@@ -63,4 +62,14 @@ void TaskCreator::setFilename(std::string fileName)
 std::string TaskCreator::getFilename()
 {
 	return _fileName;
+}
+
+void TaskCreator::setEntryValue(std::string entryValue)
+{
+	_entryValue = entryValue;
+}
+
+std::string TaskCreator::getEntryValue()
+{
+	return _entryValue;
 }

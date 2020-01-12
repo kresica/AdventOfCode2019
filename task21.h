@@ -6,14 +6,14 @@
 #include "taskcreator.h"
 #include "taskexecutor.h"
 
-class Task21 : public TaskExecutor
+class Task21 : public TaskExecutor, public TaskCreator
 {
 	static bool _creatorRegistered;
 	static bool _executorRegistered;
 public:
 	Task21() {}
 	~Task21() {}
-	static TaskCreator* create();
+	static std::shared_ptr<TaskCreator> create();
 	static void execute();
 };
 

@@ -3,9 +3,9 @@
 REGISTER_TASK_TO_CREATOR(Task30, 3.0)
 REGISTER_TASK_TO_EXECUTOR(Task30, 3.0)
 
-TaskCreator* Task30::create()
+std::shared_ptr<TaskCreator> Task30::create()
 {
-	return new Task30();
+	return std::shared_ptr<TaskCreator>(new Task30());
 }
 
 void Task30::execute()
@@ -41,7 +41,7 @@ void Task30::execute()
 	firstBoard_o->checkForCollisions(*secondBoard_o, collisions);
 
 	int shortestDistanceFromOrigin = 0;
-	for (std::list<coordinate_t>::iterator it = collisions.begin(); it != collisions.end(); ++it) {
+	for (auto it = collisions.begin(); it != collisions.end(); ++it) {
 		int distanceFromOrigin = abs((*it).xPos) + abs((*it).yPos);
 		if (!shortestDistanceFromOrigin || distanceFromOrigin < shortestDistanceFromOrigin) {
 			shortestDistanceFromOrigin = distanceFromOrigin;
