@@ -4,6 +4,7 @@
 #include <iostream>
 #include <map>
 #include <vector>
+#include <list>
 
 // mangler_t entry -> std::pair<int, int>
 //                 -> first = position
@@ -15,12 +16,15 @@ class MoonComputer
 {
 	static program_t _program;
 	static bool _verbose;
+
+	static int getOpModes(bool& first, bool& second, const int op);
 public:
 	MoonComputer() {}
 	~MoonComputer() {}
 	static void printProgramSnapshot();
-	static int doOperation(const int op, const int first,
-			       const int second, const int result);
+	static int doOperation(const int op, const int first, const bool firstMode,
+			       const int second, const bool secondMode, const int result,
+			       std::vector<int>::iterator& pc, int& varPart);
 	static void mangleTheCode(const mangler_t& mangler);
 	static int runMoonProgram();
 	static int runMoonProgram(int& programResult);
