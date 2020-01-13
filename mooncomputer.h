@@ -24,7 +24,7 @@ public:
 	static void printProgramSnapshot();
 	static int doOperation(const int op, const int first, const bool firstMode,
 			       const int second, const bool secondMode, const int result,
-			       std::vector<int>::iterator& pc, int& varPart);
+			       std::vector<int>::iterator& pc, int& var);
 	static void mangleTheCode(const mangler_t& mangler);
 	static int runMoonProgram();
 	static int runMoonProgram(int& programResult);

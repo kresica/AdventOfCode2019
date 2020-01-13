@@ -49,7 +49,7 @@ void MoonComputer::printProgramSnapshot()
 
 int MoonComputer::doOperation(const int op, const int first, const bool firstMode,
 			      const int second, const bool secondMode, const int result,
-			      std::vector<int>::iterator &pc, int &varPart)
+			      std::vector<int>::iterator &pc, int &var)
 {
 	if (op == 1) {
 		int firstParam = firstMode ? first : _program[first];
@@ -67,25 +67,20 @@ int MoonComputer::doOperation(const int op, const int first, const bool firstMod
 		std::cout << "Enter input: ";
 		std::cin >> _program[first];
 		std::cout << std::endl;
-		pc -= 2;
-		varPart += 2;
-		varPart %= 4;
 		return 0;
 	}
 	else if (op == 4) {
 		std::cout << (firstMode ? first : _program[first]);
 		std::cout << std::endl;
-		pc -= 2;
-		varPart += 2;
-		varPart %= 4;
 		return 0;
 	}
 	else if (op == 5 || op == 6) {
 		int firstParam = firstMode ? first : _program[first];
 		int secondParam = secondMode ? second : _program[second];
 		if ((op == 5) ? firstParam : !firstParam) {
-			pc = _program.begin() + secondParam - 1;
-			varPart = 4 - secondParam % 4;
+			pc = _program.begin() + secondParam;
+			var = 4 - std::distance(_program.begin(), pc) % 4;
+			--pc;
 		}
 		return 0;
 	}
@@ -140,11 +135,11 @@ int MoonComputer::runMoonProgram(int& programResult)
 	int secondMode;
 	int result;
 	int ret;
-	int varPart = 0;
+	int var = 0;
 	bool programLoaded = false;
 
 	for (auto pc = _program.begin(); pc != _program.end(); ++pc) {
-		if ((pc - _program.begin() + varPart) % 4 == 0) {
+		if ((pc - _program.begin() + var) % 4 == 0) {
 			operation = _program.at(pc - _program.begin());
 			if (!(operation / 10000 % 10)) {
 				firstMode = operation / 100 % 10;
@@ -156,14 +151,25 @@ int MoonComputer::runMoonProgram(int& programResult)
 					  << std::endl;
 				return -1;
 			}
+			programLoaded = (operation == 99);
 		}
-		else if ((pc - _program.begin() + varPart) % 4 == 1) {
+		else if ((pc - _program.begin() + var) % 4 == 1) {
 			firstOperand = _program.at(pc - _program.begin());
+			programLoaded = (operation == 3 || operation == 4);
+			if (programLoaded) {
+				var += 2;
+				var %= 4;
+			}
 		}
-		else if ((pc - _program.begin() + varPart) % 4 == 2) {
+		else if ((pc - _program.begin() + var) % 4 == 2) {
 			secondOperand = _program.at(pc - _program.begin());
+			programLoaded = (operation == 5 || operation == 6);
+			if (programLoaded) {
+				++var;
+				var %= 4;
+			}
 		}
-		else if ((pc - _program.begin() + varPart) % 4 == 3) {
+		else if ((pc - _program.begin() + var) % 4 == 3) {
 			result = _program.at(pc - _program.begin());
 			programLoaded = true;
 		}
@@ -172,7 +178,7 @@ int MoonComputer::runMoonProgram(int& programResult)
 		}
 
 		ret = MoonComputer::doOperation(operation, firstOperand, firstMode, secondOperand,
-						secondMode, result, pc, varPart);
+						secondMode, result, pc, var);
 		if (ret == -1) {
 			int index = std::distance(_program.begin(), pc+1);
 			if (_verbose) {
