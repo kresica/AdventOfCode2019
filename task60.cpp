@@ -9,14 +9,12 @@ std::shared_ptr<TaskCreator> Task60::create()
 }
 
 bool Task60::findNode(std::shared_ptr<orbitnode_t> root, std::string& name,
-		      std::shared_ptr<orbitnode_t>& match, int& level)
+		      std::shared_ptr<orbitnode_t>& match)
 {
 	for (std::shared_ptr<orbitnode_t> child : root->children) {
-		++level;
-		if (findNode(child, name, match, level)) {
+		if (findNode(child, name, match)) {
 			return true;
 		}
-		--level;
 	}
 	if (root->name == name) {
 		match = root;
@@ -35,8 +33,7 @@ void Task60::connectFreeRadicals(std::shared_ptr<orbitnode_t> root,
 			continue;
 		}
 		std::shared_ptr<orbitnode_t> node;
-		int level = 1;
-		findNode(root, (*it)->name, node, level);
+		findNode(root, (*it)->name, node);
 		if (node) {
 			for (std::shared_ptr<orbitnode_t> child : (*it)->children) {
 				node->children.push_back(std::move(child));
@@ -65,14 +62,13 @@ std::shared_ptr<orbitnode_t> Task60::createOrbitTree()
 
 	openFile(iFile);
 	while (iFile >> orbit) {
-		int level = 1;
 		std::shared_ptr<orbitnode_t> node;
 		int delimiterPos = orbit.find(')');
 		std::string parent = orbit.substr(0, delimiterPos);
 		std::string child = orbit.substr(delimiterPos + 1);
 		int ret = false;
 		for (std::shared_ptr<orbitnode_t> radical : freeRadicals) {
-			ret = findNode(radical, parent, node, level);
+			ret = findNode(radical, parent, node);
 			if (ret) {
 				std::shared_ptr<orbitnode_t> childNode =
 						std::shared_ptr<orbitnode_t>(new orbitnode_t(child));

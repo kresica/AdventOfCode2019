@@ -25,7 +25,7 @@ class Task60 : public TaskExecutor, public TaskCreator
 	static bool _executorRegistered;
 
 	static bool findNode(std::shared_ptr<orbitnode_t> root, std::string& name,
-			     std::shared_ptr<orbitnode_t>& match, int& level);
+			     std::shared_ptr<orbitnode_t>& match);
 	static void connectFreeRadicals(std::shared_ptr<orbitnode_t> root,
 					std::list<std::shared_ptr<orbitnode_t>> freeRadicals);
 	static std::shared_ptr<orbitnode_t> createOrbitTree();
