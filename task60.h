@@ -11,12 +11,10 @@
 typedef struct orbitnode_t
 {
 	std::string name;
-	int level;
 	std::weak_ptr<orbitnode_t> parent;
 	std::list<std::shared_ptr<orbitnode_t>> children;
-	orbitnode_t(const std::string name = "COM", const int level = 0) {
+	orbitnode_t(const std::string name = "COM") {
 		this->name = name;
-		this->level = level;
 		this->parent.reset();
 	}
 } orbitnode_t;
@@ -28,8 +26,10 @@ class Task60 : public TaskExecutor, public TaskCreator
 
 	static bool findNode(std::shared_ptr<orbitnode_t> root, std::string& name,
 			     std::shared_ptr<orbitnode_t>& match, int& level);
+	static void connectFreeRadicals(std::shared_ptr<orbitnode_t> root,
+					std::list<std::shared_ptr<orbitnode_t>> freeRadicals);
 	static std::shared_ptr<orbitnode_t> createOrbitTree();
-	static int findOrbits(std::shared_ptr<orbitnode_t> root);
+	static int findOrbits(std::shared_ptr<orbitnode_t> root, int &level);
 public:
 	Task60() {}
 	~Task60() {}
