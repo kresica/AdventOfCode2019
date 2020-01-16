@@ -7,29 +7,14 @@
 
 #include "taskcreator.h"
 #include "taskexecutor.h"
-
-typedef struct orbitnode_t
-{
-	std::string name;
-	std::weak_ptr<orbitnode_t> parent;
-	std::list<std::shared_ptr<orbitnode_t>> children;
-	orbitnode_t(const std::string name = "COM") {
-		this->name = name;
-		this->parent.reset();
-	}
-} orbitnode_t;
+#include "tree.h"
 
 class Task60 : public TaskExecutor, public TaskCreator
 {
 	static bool _creatorRegistered;
 	static bool _executorRegistered;
 
-	static bool findNode(std::shared_ptr<orbitnode_t> root, std::string& name,
-			     std::shared_ptr<orbitnode_t>& match);
-	static void connectFreeRadicals(std::shared_ptr<orbitnode_t> root,
-					std::list<std::shared_ptr<orbitnode_t>> freeRadicals);
-	static std::shared_ptr<orbitnode_t> createOrbitTree();
-	static int findOrbits(std::shared_ptr<orbitnode_t> root, int &level);
+	static int findOrbits(std::shared_ptr<orbitnode_t> root, int& levelSum);
 public:
 	Task60() {}
 	~Task60() {}
