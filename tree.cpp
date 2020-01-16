@@ -1,6 +1,6 @@
 #include "tree.h"
 
-bool Tree::findNode(std::shared_ptr<orbitnode_t> root, std::string& name,
+bool Tree::findNode(std::shared_ptr<orbitnode_t>& root, std::string name,
 		    std::shared_ptr<orbitnode_t>& match)
 {
 	for (std::shared_ptr<orbitnode_t> child : root->children) {
@@ -16,7 +16,7 @@ bool Tree::findNode(std::shared_ptr<orbitnode_t> root, std::string& name,
 }
 
 void Tree::connectFreeRadicals(std::shared_ptr<orbitnode_t> root,
-			       std::list<std::shared_ptr<orbitnode_t> > &freeRadicals)
+			       std::list<std::shared_ptr<orbitnode_t>>& freeRadicals)
 {
 	auto previousSize = freeRadicals.size();
 	for (auto it = freeRadicals.begin(); it != freeRadicals.end(); ) {
@@ -28,6 +28,7 @@ void Tree::connectFreeRadicals(std::shared_ptr<orbitnode_t> root,
 		findNode(root, (*it)->name, node);
 		if (node) {
 			for (std::shared_ptr<orbitnode_t> child : (*it)->children) {
+				child->parent = node;
 				node->children.push_back(std::move(child));
 			}
 			freeRadicals.erase(it++);
@@ -73,7 +74,7 @@ std::shared_ptr<orbitnode_t> Tree::createOrbitTree(std::ifstream& iFile)
 			std::shared_ptr<orbitnode_t> childNode =
 					std::shared_ptr<orbitnode_t>(new orbitnode_t(child));
 			childNode->parent = parentNode;
-			parentNode->children.push_back(std::move(childNode));
+			parentNode->children.push_back(childNode);
 			freeRadicals.push_back(std::move(parentNode));
 		}
 	}
@@ -82,8 +83,8 @@ std::shared_ptr<orbitnode_t> Tree::createOrbitTree(std::ifstream& iFile)
 	return std::move(root);
 }
 
-void Tree::findPath(std::shared_ptr<orbitnode_t> &node,
-		    std::list<std::shared_ptr<orbitnode_t>> &pathList)
+void Tree::findPath(std::shared_ptr<orbitnode_t> node,
+		    std::list<std::shared_ptr<orbitnode_t>>& pathList)
 {
 	if (node->parent) {
 		findPath(node->parent, pathList);

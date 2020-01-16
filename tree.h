@@ -10,7 +10,7 @@
 typedef struct orbitnode_t
 {
 	std::string name;
-	std::weak_ptr<orbitnode_t> parent;
+	std::shared_ptr<orbitnode_t> parent;
 	std::list<std::shared_ptr<orbitnode_t>> children;
 	orbitnode_t(const std::string name = "COM") {
 		this->name = name;
@@ -26,9 +26,9 @@ public:
 	Tree() {}
 	~Tree() {}
 	std::shared_ptr<orbitnode_t> createOrbitTree(std::ifstream &iFile);
-	bool findNode(std::shared_ptr<orbitnode_t> root, std::string& name,
+	bool findNode(std::shared_ptr<orbitnode_t>& root, std::string name,
 		      std::shared_ptr<orbitnode_t>& match);
-	void findPath(std::shared_ptr<orbitnode_t>& node,
+	void findPath(std::shared_ptr<orbitnode_t> node,
 		      std::list<std::shared_ptr<orbitnode_t>>& pathList);
 };
 
