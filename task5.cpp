@@ -11,22 +11,9 @@ std::shared_ptr<TaskCreator> Task5::create()
 
 void Task5::execute()
 {
-	std::ifstream iFile;
-	std::stringbuf sb;
-
 	program_t program;
 
-	openFile(iFile);
-	while (!iFile.eof()) {
-		iFile.get(sb, ',');
-		iFile.get();
-		const int intCode = std::stoi(sb.str());
-		program.push_back(intCode);
-
-		sb.str("");
-		sb.str().clear();
-	}
-
+	MoonComputer::openProgramFile(program);
 	MoonComputer::setVerbose(false);
 	MoonComputer::uploadProgramToComputer(program);
 

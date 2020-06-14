@@ -1,7 +1,18 @@
 #include "mooncomputer.h"
+#include "taskexecutor.h"
 
 program_t MoonComputer::_program;
 bool MoonComputer::_verbose = true;
+bool MoonComputer::_autoInsert = false;
+std::vector<int> MoonComputer::_inputs;
+
+MoonComputer::MoonComputer(const MoonComputer& obj)
+{
+	obj._program = _program;
+	obj._verbose = _verbose;
+	obj._autoInsert = _autoInsert;
+	obj._inputs = _inputs;
+}
 
 int MoonComputer::getOpModes(bool& first, bool& second, const int op)
 {
@@ -64,8 +75,17 @@ int MoonComputer::doOperation(const int op, const int first, const bool firstMod
 		return 0;
 	}
 	else if (op == 3) {
-		std::cout << "Enter input: ";
-		std::cin >> _program[first];
+		if (!_autoInsert) {
+			std::cout << "Enter input: ";
+			std::cin >> _program[first];
+		} else {
+			if (_inputs.empty()) {
+				std::cout << "No input provided, using 0" << std::endl;
+				_program[first] = 0;
+			}
+			_program[first] = _inputs[0];
+			_inputs.erase(_inputs.begin());
+		}
 		std::cout << std::endl;
 		return 0;
 	}
@@ -200,4 +220,34 @@ int MoonComputer::runMoonProgram(int& programResult)
 	}
 	std::cout << "No halt operation reached" << std::endl;
 	return -1;
+}
+
+void MoonComputer::openProgramFile(program_t &program)
+{
+	std::ifstream iFile;
+	std::stringbuf sb;
+
+	TaskExecutor::openFile(iFile);
+	while (!iFile.eof()) {
+		iFile.get(sb, ',');
+		iFile.get();
+		const int intCode = std::stoi(sb.str());
+		program.push_back(intCode);
+
+		sb.str("");
+		sb.str().clear();
+	}
+}
+
+void MoonComputer::setAutoInsert(bool flag, std::vector<int>* inputs = nullptr)
+{
+	_autoInsert = flag;
+	if (!flag)
+		return;
+	if (inputs == nullptr) {
+		std::cout << "WARNING! Auto insert selected but no inputs provided!" << std::endl;
+		std::cout << "         Undefined behavior might occur!" << std::endl;
+		return;
+	}
+	_inputs = *inputs;
 }

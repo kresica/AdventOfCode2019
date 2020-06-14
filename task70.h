@@ -1,18 +1,22 @@
-#ifndef TASK5_H
-#define TASK5_H
+#ifndef TASK70_H
+#define TASK70_H
+
+#include <algorithm>
 
 #include "taskcreator.h"
 #include "taskexecutor.h"
+#include "mooncomputer.h"
 
-class Task5 : public TaskExecutor, public TaskCreator
+class Task70 : public TaskExecutor, public TaskCreator
 {
 	static bool _creatorRegistered;
 	static bool _executorRegistered;
+
 public:
-	Task5() {}
-	~Task5() {}
+	Task70() {}
+	~Task70() {}
 	static std::shared_ptr<TaskCreator> create();
 	static void execute();
 };
 
-#endif // TASK5_H
+#endif // TASK70_H
