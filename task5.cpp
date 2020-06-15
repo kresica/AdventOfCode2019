@@ -12,13 +12,14 @@ std::shared_ptr<TaskCreator> Task5::create()
 void Task5::execute()
 {
 	program_t program;
+	MoonComputer::classPtr_t moonCpu = MoonComputer::classPtr_t(new MoonComputer());
 
-	MoonComputer::openProgramFile(program);
-	MoonComputer::setVerbose(false);
-	MoonComputer::uploadProgramToComputer(program);
+	moonCpu->openProgramFile(program);
+	moonCpu->setVerbose(false);
+	moonCpu->uploadProgramToComputer(program);
 
-	int programResult;
-	if (!MoonComputer::runMoonProgram(programResult)) {
+	progResult_t programResult;
+	if (!moonCpu->runMoonProgram(programResult)) {
 		return;
 	}
 	exit(1);

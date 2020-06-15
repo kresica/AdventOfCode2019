@@ -27,17 +27,19 @@ void Task20::execute()
 		sb.str().clear();
 	}
 
-	MoonComputer::setVerbose(false);
-	MoonComputer::uploadProgramToComputer(program);
+	MoonComputer::classPtr_t moonCpu = MoonComputer::classPtr_t(new MoonComputer());
+
+	moonCpu->setVerbose(false);
+	moonCpu->uploadProgramToComputer(program);
 
 	mangler_t mangler;
 	mangler.insert(std::pair<int, int>(1, 12));
 	mangler.insert(std::pair<int, int>(2, 2));
-	MoonComputer::mangleTheCode(mangler);
+	moonCpu->mangleTheCode(mangler);
 
-	int programResult;
-	if (!MoonComputer::runMoonProgram(programResult)) {
-		std::cout << "First program entry: " << programResult << std::endl;
+	progResult_t programResult;
+	if (!moonCpu->runMoonProgram(programResult)) {
+		std::cout << "First program entry: " << programResult[0] << std::endl;
 		return;
 	}
 	exit(1);

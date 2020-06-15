@@ -16,7 +16,7 @@ void Task21::execute()
 	std::stringbuf sb;
 
 	program_t program;
-	int programResult;
+	progResult_t programResult;
 
 	openFile(iFile);
 	while (!iFile.eof()) {
@@ -43,7 +43,7 @@ void Task21::execute()
 			moonComp_o->mangleTheCode(mangler);
 
 			moonComp_o->runMoonProgram(programResult);
-			if (programResult == 19690720) {
+			if (programResult[0] == 19690720) {
 				std::cout << "Got correct parameters:" << std::endl;
 				std::cout << "100 * noun + verb = " << 100 * i + j << std::endl;
 				return;

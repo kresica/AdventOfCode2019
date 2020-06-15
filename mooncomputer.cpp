@@ -1,19 +1,6 @@
 #include "mooncomputer.h"
 #include "taskexecutor.h"
 
-program_t MoonComputer::_program;
-bool MoonComputer::_verbose = true;
-bool MoonComputer::_autoInsert = false;
-std::vector<int> MoonComputer::_inputs;
-
-MoonComputer::MoonComputer(const MoonComputer& obj)
-{
-	obj._program = _program;
-	obj._verbose = _verbose;
-	obj._autoInsert = _autoInsert;
-	obj._inputs = _inputs;
-}
-
 int MoonComputer::getOpModes(bool& first, bool& second, const int op)
 {
 	if (!(op / 10000)) {
@@ -60,7 +47,7 @@ void MoonComputer::printProgramSnapshot()
 
 int MoonComputer::doOperation(const int op, const int first, const bool firstMode,
 			      const int second, const bool secondMode, const int result,
-			      std::vector<int>::iterator &pc, int &var)
+			      std::vector<int>::iterator &pc, int &var, progResult_t& pRes)
 {
 	if (op == 1) {
 		int firstParam = firstMode ? first : _program[first];
@@ -82,16 +69,21 @@ int MoonComputer::doOperation(const int op, const int first, const bool firstMod
 			if (_inputs.empty()) {
 				std::cout << "No input provided, using 0" << std::endl;
 				_program[first] = 0;
+				return 0;
 			}
 			_program[first] = _inputs[0];
 			_inputs.erase(_inputs.begin());
+			return 0;
 		}
 		std::cout << std::endl;
 		return 0;
 	}
 	else if (op == 4) {
-		std::cout << (firstMode ? first : _program[first]);
-		std::cout << std::endl;
+		if (_showOutput) {
+			std::cout << (firstMode ? first : _program[first]);
+			std::cout << std::endl;
+		}
+		pRes.push_back(firstMode ? first : _program[first]);
 		return 0;
 	}
 	else if (op == 5 || op == 6) {
@@ -142,11 +134,11 @@ void MoonComputer::mangleTheCode(const mangler_t& mangler)
 
 int MoonComputer::runMoonProgram()
 {
-	int result;
+	progResult_t result;
 	return MoonComputer::runMoonProgram(result);
 }
 
-int MoonComputer::runMoonProgram(int& programResult)
+int MoonComputer::runMoonProgram(progResult_t &programResult)
 {
 	int operation;
 	int firstOperand;
@@ -198,7 +190,7 @@ int MoonComputer::runMoonProgram(int& programResult)
 		}
 
 		ret = MoonComputer::doOperation(operation, firstOperand, firstMode, secondOperand,
-						secondMode, result, pc, var);
+						secondMode, result, pc, var, programResult);
 		if (ret == -1) {
 			int index = std::distance(_program.begin(), pc+1);
 			if (_verbose) {
@@ -208,7 +200,7 @@ int MoonComputer::runMoonProgram(int& programResult)
 			return -1;
 		}
 		else if (ret == 1) {
-			programResult = _program[0];
+			programResult.insert(programResult.begin(), _program[0]);
 			int index = std::distance(_program.begin(), pc+1);
 			if (_verbose) {
 				std::cout << "Program ended at " << index / 4 <<
@@ -239,7 +231,7 @@ void MoonComputer::openProgramFile(program_t &program)
 	}
 }
 
-void MoonComputer::setAutoInsert(bool flag, std::vector<int>* inputs = nullptr)
+void MoonComputer::setAutoInsert(bool flag, std::vector<int>* inputs)
 {
 	_autoInsert = flag;
 	if (!flag)

@@ -11,6 +11,16 @@
 	bool className::_executorRegistered = \
 	TaskExecutor::registerTask(#taskName, className::execute);
 
+// Not thread safe!
+#define DO_ONCE(expr) \
+	{ \
+		static bool done = false; \
+		if (!done) { \
+			expr; \
+			done = true; \
+		} \
+	}
+
 class TaskExecutor
 {
 	static std::shared_ptr<TaskExecutor> _instance;

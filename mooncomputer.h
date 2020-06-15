@@ -6,37 +6,42 @@
 #include <vector>
 #include <list>
 #include <sstream>
+#include <memory>
 
 // mangler_t entry -> std::pair<int, int>
 //                 -> first = position
 //                 -> second = value
 typedef std::map<int, int> mangler_t;
 typedef std::vector<int> program_t;
+typedef std::vector<int> progResult_t;
 
 class MoonComputer
 {
-	static program_t _program;
-	static bool _verbose;
-	static bool _autoInsert;
-	static std::vector<int> _inputs;
+	program_t _program;
+	bool _verbose;
+	bool _autoInsert;
+	std::vector<int> _inputs;
+	bool _showOutput = true;
 
-	static int getOpModes(bool& first, bool& second, const int op);
+	int getOpModes(bool& first, bool& second, const int op);
 public:
 	MoonComputer() {}
 	~MoonComputer() {}
-	MoonComputer(const MoonComputer& obj);
 
-	static void printProgramSnapshot();
-	static int doOperation(const int op, const int first, const bool firstMode,
-			       const int second, const bool secondMode, const int result,
-			       std::vector<int>::iterator& pc, int& var);
-	static void mangleTheCode(const mangler_t& mangler);
-	static int runMoonProgram();
-	static int runMoonProgram(int& programResult);
-	static void uploadProgramToComputer(program_t& program) { _program = program; }
-	static void setVerbose(bool flag) { _verbose = flag; }
-	static void openProgramFile(program_t &program);
-	static void setAutoInsert(bool flag, std::vector<int>* inputs);
+	typedef std::shared_ptr<MoonComputer> classPtr_t;
+
+	void printProgramSnapshot();
+	int doOperation(const int op, const int first, const bool firstMode,
+			const int second, const bool secondMode, const int result,
+			std::vector<int>::iterator& pc, int& var, progResult_t &pRes);
+	void mangleTheCode(const mangler_t& mangler);
+	int runMoonProgram();
+	int runMoonProgram(progResult_t& programResult);
+	void uploadProgramToComputer(program_t& program) { _program = program; }
+	void setVerbose(bool flag) { _verbose = flag; }
+	void openProgramFile(program_t &program);
+	void setAutoInsert(bool flag, std::vector<int>* inputs = nullptr);
+	void showOutput(bool flag) { _showOutput = flag; }
 };
 
 #endif // MOONCOMPUTER_H
