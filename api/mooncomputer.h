@@ -26,6 +26,8 @@ class MoonComputer
 	bool _autoInsert = false;
 	std::vector<int> _inputs;
 	bool _showOutput = true;
+	int _haltPc = 0;
+	int _var = 0;
 
 	int getOpModes(bool& first, bool& second, const int op);
 public:

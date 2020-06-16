@@ -10,79 +10,90 @@ std::shared_ptr<TaskCreator> Task71::create()
 
 void Task71::execute()
 {
-	const int numOfAmps = 5;
 	program_t program;
-	MoonComputer::classPtr_t amp[numOfAmps];
-	bool verbose = true;
+	bool verbose = false;
 
-	for (int i = 0; i < numOfAmps; ++i) {
-		amp[i] = MoonComputer::classPtr_t(new MoonComputer());
-		DO_ONCE(amp[i]->openProgramFile(program));
-		amp[i]->uploadProgramToComputer(program);
-		amp[i]->setVerbose(false);
-		amp[i]->showOutput(true);
-	}
-
-	std::array<int, numOfAmps> phaseSettings = { 5,6,7,8,9 };
-	std::array<int, numOfAmps> highestPhaseSettings = phaseSettings;
-	std::array<bool, numOfAmps> programDone = { false };
+	intAmpArr_t phaseSettings = { 5,6,7,8,9 };
+	intAmpArr_t highestPhaseSettings = phaseSettings;
 	int highestResult = INT_MIN;
-	bool allDone = false;
 
 	do {
-		std::array<progResult_t, numOfAmps> result;
-		int intRes;
-		static bool start = true;
+		bool allDone = false;
+		std::array<bool, NUM_OF_AMPS> programDone = { false };
+		progResAmpArr_t result;
+		int intRes, progRes;
+		bool start = true;
+		progResAmpArr_t parentAmpResult;
+
+		MoonComputer::classPtr_t amp[NUM_OF_AMPS];
+		for (int i = 0; i < NUM_OF_AMPS; ++i) {
+			amp[i] = MoonComputer::classPtr_t(new MoonComputer());
+			DO_ONCE(amp[i]->openProgramFile(program));
+			amp[i]->uploadProgramToComputer(program);
+			amp[i]->setVerbose(false);
+			amp[i]->showOutput(false);
+		}
+
 		do {
-			for (int i = 0; i < numOfAmps; ++i) {
+			for (int i = 0; i < NUM_OF_AMPS; ++i) {
+				int prevAmpIdx = (i + NUM_OF_AMPS - 1) % NUM_OF_AMPS;
 				if (programDone[i])
 					continue;
-				progResult_t parentAmpResult = result.at((i + numOfAmps - 1) % numOfAmps);
 				std::vector<int> autoInsertData;
+				if (!result.at(prevAmpIdx).empty()) {
+					parentAmpResult.at(i) = result.at(prevAmpIdx);
+					result.at(prevAmpIdx).clear();
+				}
 
 				if (start) {
 					autoInsertData.push_back(phaseSettings[i]);
 					if (i == 0) {
 						autoInsertData.push_back(0);
 					} else {
-						while (parentAmpResult.size() >= 2) {
-							autoInsertData.push_back(parentAmpResult[1]);
-							if (!programDone[(i + numOfAmps - 1) % numOfAmps]) {
-								parentAmpResult.erase(parentAmpResult.begin());
-								parentAmpResult.erase(parentAmpResult.begin());
+						while (parentAmpResult.at(i).size() > 0) {
+							if (parentAmpResult.at(i).size() == 1) {
+								autoInsertData.push_back(parentAmpResult.at(i)[0]);
+								break;
 							}
+							autoInsertData.push_back(parentAmpResult.at(i)[0]);
+							parentAmpResult.at(i).erase(parentAmpResult.at(i).begin());
 						}
 					}
-					start = false;
 				} else {
-					while (parentAmpResult.size() >= 2) {
-						autoInsertData.push_back(parentAmpResult[1]);
-						if (!programDone[(i + numOfAmps - 1) % numOfAmps]) {
-							parentAmpResult.erase(parentAmpResult.begin());
-							parentAmpResult.erase(parentAmpResult.begin());
+					while (parentAmpResult.at(i).size() > 0) {
+						if (parentAmpResult.at(i).size() == 1) {
+							autoInsertData.push_back(parentAmpResult.at(i)[0]);
+							break;
 						}
+						autoInsertData.push_back(parentAmpResult.at(i)[0]);
+						parentAmpResult.at(i).erase(parentAmpResult.at(i).begin());
 					}
 				}
 
 				if (autoInsertData.empty())
 					continue;
 				amp[i]->setAutoInsert(true, &autoInsertData);
-				amp[i]->runMoonProgram(result.at(i));
-				if (result.at(i)[0] == 1)
+				progRes = amp[i]->runMoonProgram(result.at(i));
+				if (progRes == 0) {
 					programDone[i] = true;
-				intRes = result.at(i)[1];
+					result.at(i).erase(result.at(i).begin());
+				}
+				intRes = result.at(i)[0];
 				if (verbose)
 					std::cout << i << ". amp result: " << intRes << std::endl;
 			}
+			start = false;
 
-			for (int i = 0; i < numOfAmps; ++i) {
+			for (int i = 0; i < NUM_OF_AMPS; ++i) {
 				if (!programDone[i])
 					break;
+				if (programDone[i] && i == (NUM_OF_AMPS - 1)) {
+					allDone = true;
+				}
 			}
-			allDone = true;
 		} while (!allDone);
 		if (verbose) {
-			for (int i = 0; i < numOfAmps; ++i)
+			for (int i = 0; i < NUM_OF_AMPS; ++i)
 				std::cout << phaseSettings[i];
 			std::cout << " final result: " << intRes << std::endl;
 		}
@@ -95,7 +106,7 @@ void Task71::execute()
 
 	std::cout << "Highest result: " << highestResult << std::endl;
 	std::cout << "Permutation: ";
-	for (int i = 0; i < numOfAmps; ++i)
+	for (int i = 0; i < NUM_OF_AMPS; ++i)
 		std::cout << highestPhaseSettings[i];
 	std::cout << std::endl;
 }

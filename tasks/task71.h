@@ -7,6 +7,10 @@
 #include "taskexecutor.h"
 #include "mooncomputer.h"
 
+#define NUM_OF_AMPS 5
+typedef std::array<int, NUM_OF_AMPS> intAmpArr_t;
+typedef std::array<progResult_t, NUM_OF_AMPS> progResAmpArr_t;
+
 class Task71 : public TaskExecutor, public TaskCreator
 {
 	static bool _creatorRegistered;

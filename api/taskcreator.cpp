@@ -6,17 +6,22 @@
 std::shared_ptr<TaskCreator> TaskCreator::_instance = nullptr;
 std::string TaskCreator::_taskNumber = "";
 std::string TaskCreator::_fileName = "";
-std::map<std::string, std::shared_ptr<TaskCreator>> TaskCreator::_taskMap;
 std::string TaskCreator::_entryValue = "";
+
+static std::map<std::string, std::shared_ptr<TaskCreator>>& getTaskMap()
+{
+	static std::map<std::string, std::shared_ptr<TaskCreator>> _taskMap;
+	return _taskMap;
+}
 
 // -----------------------------------------------------------------
 // Member functions
 // -----------------------------------------------------------------
 std::shared_ptr<TaskCreator> TaskCreator::createTask(std::string taskNumber)
 {
-	auto it = _taskMap.find(taskNumber);
+	auto it = getTaskMap().find(taskNumber);
 
-	if (it == _taskMap.end()) {
+	if (it == getTaskMap().end()) {
 		std::cout << "Unable to create task, task " << taskNumber
 			  << " not found in map" << std::endl;
 		exit(1);
@@ -45,10 +50,10 @@ std::string TaskCreator::getTaskNumber()
 
 bool TaskCreator::registerTask(std::string taskName, std::shared_ptr<TaskCreator> createFunc)
 {
-	auto it = _taskMap.find(taskName);
+	auto it = getTaskMap().find(taskName);
 
-	if (it == _taskMap.end()) {
-		_taskMap[taskName] = createFunc;
+	if (it == getTaskMap().end()) {
+		getTaskMap()[taskName] = createFunc;
 		return true;
 	}
 	return false;

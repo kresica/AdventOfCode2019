@@ -4,17 +4,22 @@
 // Default static members definitions
 // -----------------------------------------------------------------
 std::shared_ptr<TaskExecutor> TaskExecutor::_instance = nullptr;
-std::map<std::string, void (*)()> TaskExecutor::_taskMap;
+
+static std::map<std::string, void (*)()>& getTaskMap()
+{
+	static std::map<std::string, void (*)()> _taskMap;
+	return _taskMap;
+}
 
 // -----------------------------------------------------------------
 // Member functions
 // -----------------------------------------------------------------
 bool TaskExecutor::registerTask(std::string taskName, void executeFunc())
 {
-	auto it = _taskMap.find(taskName);
+	auto it = getTaskMap().find(taskName);
 
-	if (it == _taskMap.end()) {
-		_taskMap[taskName] = executeFunc;
+	if (it == getTaskMap().end()) {
+		getTaskMap()[taskName] = executeFunc;
 		return true;
 	}
 	return false;
@@ -40,9 +45,9 @@ void TaskExecutor::openFile(std::ifstream& fileHandle)
 
 void TaskExecutor::execute(std::string taskNumber)
 {
-	auto it = _taskMap.find(taskNumber);
+	auto it = getTaskMap().find(taskNumber);
 
-	if (it == _taskMap.end()) {
+	if (it == getTaskMap().end()) {
 		std::cout << "Unable to execute task, task " << taskNumber
 			  << " not found in map" << std::endl;
 		exit(1);

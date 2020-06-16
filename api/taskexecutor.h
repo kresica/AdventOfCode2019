@@ -24,7 +24,6 @@
 class TaskExecutor
 {
 	static std::shared_ptr<TaskExecutor> _instance;
-	static std::map<std::string, void (*)()> _taskMap;
 
 public:
 	TaskExecutor() {}

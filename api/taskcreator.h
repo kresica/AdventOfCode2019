@@ -17,7 +17,6 @@ private:
 	static std::shared_ptr<TaskCreator> _instance;
 	static std::string _taskNumber;
 	static std::string _fileName;
-	static std::map<std::string, std::shared_ptr<TaskCreator>> _taskMap;
 	static std::string _entryValue;
 
 	static std::shared_ptr<TaskCreator> createTask(std::string taskNumber);
