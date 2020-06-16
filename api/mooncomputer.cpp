@@ -241,5 +241,5 @@ void MoonComputer::setAutoInsert(bool flag, std::vector<int>* inputs)
 		std::cout << "         Undefined behavior might occur!" << std::endl;
 		return;
 	}
-	_inputs = *inputs;
+	_inputs.insert(_inputs.end(), inputs->begin(), inputs->end());
 }

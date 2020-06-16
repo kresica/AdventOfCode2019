@@ -13,13 +13,17 @@
 //                 -> second = value
 typedef std::map<int, int> mangler_t;
 typedef std::vector<int> program_t;
+// progResult_t -> [0] = return value of pc = 0
+//              -> [1] = first program output (op code = 4)
+//              -> [2] = second program output (op code = 4)
+//              -> [n] = n-th program output (op code = 4)
 typedef std::vector<int> progResult_t;
 
 class MoonComputer
 {
 	program_t _program;
-	bool _verbose;
-	bool _autoInsert;
+	bool _verbose = false;
+	bool _autoInsert = false;
 	std::vector<int> _inputs;
 	bool _showOutput = true;
 
