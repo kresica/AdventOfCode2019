@@ -1,19 +1,19 @@
-#ifndef TASK90_H
-#define TASK90_H
+#ifndef TASK9_H
+#define TASK9_H
 
 #include "taskcreator.h"
 #include "taskexecutor.h"
 
-class Task90 : public TaskExecutor, public TaskCreator
+class Task9 : public TaskExecutor, public TaskCreator
 {
 	static bool _creatorRegistered;
 	static bool _executorRegistered;
 
 public:
-	Task90() {}
-	~Task90() {}
+	Task9() {}
+	~Task9() {}
 	static std::shared_ptr<TaskCreator> create();
 	static void execute();
 };
 
-#endif // TASK90_H
+#endif // TASK9_H

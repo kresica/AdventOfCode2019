@@ -1,15 +1,15 @@
-#include "task90.h"
+#include "task9.h"
 #include "mooncomputer.h"
 
-REGISTER_TASK_TO_CREATOR(Task90, 9.0)
-REGISTER_TASK_TO_EXECUTOR(Task90, 9.0)
+REGISTER_TASK_TO_CREATOR(Task9, 9)
+REGISTER_TASK_TO_EXECUTOR(Task9, 9)
 
-std::shared_ptr<TaskCreator> Task90::create()
+std::shared_ptr<TaskCreator> Task9::create()
 {
-	return std::shared_ptr<TaskCreator>(new Task90());
+	return std::shared_ptr<TaskCreator>(new Task9());
 }
 
-void Task90::execute()
+void Task9::execute()
 {
 	program_t program;
 	MoonComputer::classPtr_t moonCpu = MoonComputer::classPtr_t(new MoonComputer());
@@ -18,9 +18,6 @@ void Task90::execute()
 	moonCpu->setVerbose(false);
 	moonCpu->setTestMode(true);
 	moonCpu->uploadProgramToComputer(program);
-	std::vector<long long> autoInsert;
-	autoInsert.push_back(1);
-	moonCpu->setAutoInsert(true, &autoInsert);
 
 	progResult_t programResult;
 	if (!moonCpu->runMoonProgram(programResult)) {
