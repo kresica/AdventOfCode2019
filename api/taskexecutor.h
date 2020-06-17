@@ -31,6 +31,7 @@ public:
 	static bool registerTask(std::string taskName, void executeFunc());
 	static std::shared_ptr<TaskExecutor> getInstance();
 	static void openFile(std::ifstream& fileHandle);
+	static void openFile(std::ifstream& fileHandle, const std::string fName);
 	static void execute(std::string taskNumber);
 };
 

@@ -10,31 +10,7 @@ std::shared_ptr<TaskCreator> Task80::create()
 
 void Task80::execute()
 {
-	std::ifstream iFile;
-	char c;
-
-	imageLayer_t imageLayer = {0};
-	std::vector<imageLayer_t> image;
-
-	openFile(iFile);
-	while (!iFile.eof()) {
-		bool eofReached = false;
-		for (int row = 0; row < IMAGE_HEIGHT; ++row) {
-			for (int col = 0; col < IMAGE_WIDTH; ++col) {
-				if (!iFile.get(c)) {
-					eofReached = true;
-					break;
-				}
-				imageLayer[row][col] = std::atoi(&c);
-			}
-			if (eofReached)
-				break;
-		}
-		if (!eofReached) {
-			image.push_back(imageLayer);
-			imageLayer = {0};
-		}
-	}
+	image_t image = SifDecoder::getImage(getFilename());
 
 	int leastAmountOfZeros = -1;
 	unsigned int imageLayerIndex = -1;

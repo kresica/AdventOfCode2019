@@ -35,10 +35,15 @@ std::shared_ptr<TaskExecutor> TaskExecutor::getInstance()
 
 void TaskExecutor::openFile(std::ifstream& fileHandle)
 {
-	std::string fileName = TaskCreator::getFilename();
-	fileHandle.open(fileName);
+	std::string fName = TaskCreator::getFilename();
+	openFile(fileHandle, fName);
+}
+
+void TaskExecutor::openFile(std::ifstream& fileHandle, const std::string fName)
+{
+	fileHandle.open(fName);
 	if (!fileHandle) {
-		std::cout << "Unable to open file " << fileName << std::endl;
+		std::cout << "Unable to open file " << fName << std::endl;
 		exit(1);
 	}
 }
