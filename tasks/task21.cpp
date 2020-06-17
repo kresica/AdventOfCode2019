@@ -17,13 +17,15 @@ void Task21::execute()
 
 	program_t program;
 	progResult_t programResult;
+	long long i = 0;
 
 	openFile(iFile);
 	while (!iFile.eof()) {
 		iFile.get(sb, ',');
 		iFile.get();
-		const int intCode = std::stoi(sb.str());
-		program.push_back(intCode);
+		const long long intCode = std::stoll(sb.str());
+		program.insert(std::make_pair(i, intCode));
+		++i;
 
 		sb.str("");
 		sb.str().clear();

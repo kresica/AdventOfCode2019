@@ -12,16 +12,7 @@ void Task70::execute()
 {
 	const int numOfAmps = 5;
 	program_t program;
-	MoonComputer::classPtr_t amp[numOfAmps];
 	bool verbose = false;
-
-	for (int i = 0; i < numOfAmps; ++i) {
-		amp[i] = MoonComputer::classPtr_t(new MoonComputer());
-		DO_ONCE(amp[i]->openProgramFile(program));
-		amp[i]->uploadProgramToComputer(program);
-		amp[i]->setVerbose(false);
-		amp[i]->showOutput(false);
-	}
 
 	std::array<int, numOfAmps> phaseSettings = { 0,1,2,3,4 };
 	std::array<int, numOfAmps> highestPhaseSettings = phaseSettings;
@@ -31,9 +22,16 @@ void Task70::execute()
 		progResult_t result;
 		int firstInput, secondInput, intRes;
 		for (int i = 0; i < numOfAmps; ++i) {
+			MoonComputer::classPtr_t amp[numOfAmps];
+			amp[i] = MoonComputer::classPtr_t(new MoonComputer());
+			DO_ONCE(amp[i]->openProgramFile(program));
+			amp[i]->uploadProgramToComputer(program);
+			amp[i]->setVerbose(false);
+			amp[i]->showOutput(false);
+
 			firstInput = phaseSettings[i];
 			(i == 0) ? secondInput = 0 : secondInput = result[1];
-			std::vector<int> autoInsertData;
+			std::vector<long long> autoInsertData;
 			autoInsertData.push_back(firstInput);
 			autoInsertData.push_back(secondInput);
 			amp[i]->setAutoInsert(true, &autoInsertData);

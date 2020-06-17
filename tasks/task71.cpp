@@ -39,7 +39,7 @@ void Task71::execute()
 				int prevAmpIdx = (i + NUM_OF_AMPS - 1) % NUM_OF_AMPS;
 				if (programDone[i])
 					continue;
-				std::vector<int> autoInsertData;
+				std::vector<long long> autoInsertData;
 				if (!result.at(prevAmpIdx).empty()) {
 					parentAmpResult.at(i) = result.at(prevAmpIdx);
 					result.at(prevAmpIdx).clear();

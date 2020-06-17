@@ -8,46 +8,50 @@
 #include <sstream>
 #include <memory>
 
-// mangler_t entry -> std::pair<int, int>
+// mangler_t entry -> std::pair<long long, long long>
 //                 -> first = position
 //                 -> second = value
-typedef std::map<int, int> mangler_t;
-typedef std::vector<int> program_t;
+using mangler_t = std::map<long long, long long>;
+using program_t = std::map<long long, long long>;
 // progResult_t -> [0] = return value of pc = 0
 //              -> [1] = first program output (op code = 4)
 //              -> [2] = second program output (op code = 4)
 //              -> [n] = n-th program output (op code = 4)
-typedef std::vector<int> progResult_t;
+using progResult_t = std::vector<long long>;
 
 class MoonComputer
 {
 	program_t _program;
 	bool _verbose = false;
 	bool _autoInsert = false;
-	std::vector<int> _inputs;
+	std::vector<long long> _inputs;
 	bool _showOutput = true;
-	int _haltPc = 0;
-	int _var = 0;
+	long long _haltPc = 0;
+	long long _var = 0;
+	long long _relBase = 0;
+	bool _testMode = false;
 
-	int getOpModes(bool& first, bool& second, const int op);
+	void printProgramSnapshot();
+	int assignOperands(long long& operand, const int mode, const long long value);
+	int doOperation(const int op, const long long first, const int firstMode,
+			const long long second, const int secondMode, const long long result,
+			const int resultMode, std::map<long long, long long>::iterator& pc,
+			progResult_t& pRes);
 public:
 	MoonComputer() {}
 	~MoonComputer() {}
 
 	typedef std::shared_ptr<MoonComputer> classPtr_t;
 
-	void printProgramSnapshot();
-	int doOperation(const int op, const int first, const bool firstMode,
-			const int second, const bool secondMode, const int result,
-			std::vector<int>::iterator& pc, int& var, progResult_t &pRes);
 	void mangleTheCode(const mangler_t& mangler);
 	int runMoonProgram();
 	int runMoonProgram(progResult_t& programResult);
 	void uploadProgramToComputer(program_t& program) { _program = program; }
 	void setVerbose(bool flag) { _verbose = flag; }
-	void openProgramFile(program_t &program);
-	void setAutoInsert(bool flag, std::vector<int>* inputs = nullptr);
+	void openProgramFile(program_t& program);
+	void setAutoInsert(bool flag, std::vector<long long>* inputs = nullptr);
 	void showOutput(bool flag) { _showOutput = flag; }
+	void setTestMode(bool flag) { _testMode = flag; }
 };
 
 #endif // MOONCOMPUTER_H

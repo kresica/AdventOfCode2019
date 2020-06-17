@@ -1,75 +1,108 @@
 #include "mooncomputer.h"
 #include "taskexecutor.h"
 
-int MoonComputer::getOpModes(bool& first, bool& second, const int op)
-{
-	if (!(op / 10000)) {
-		first = false;
-	}
-	else if (op / 10000 == 1) {
-		first = true;
-	}
-	else {
-		goto exit;
-	}
-
-	if (!(op / 1000)) {
-		second = false;
-	}
-	else if (op / 1000 == 1) {
-		second = true;
-	}
-	else {
-		goto exit;
-	}
-
-	if (!(op / 100)) {
-		return 0;
-	}
-exit:
-	std::cout << "Non-existent opcode, halting" << std::endl;
-	return -1;
-}
-
+// -----------------------------------------------------------------
+// Private
+// -----------------------------------------------------------------
 void MoonComputer::printProgramSnapshot()
 {
 	if (!_verbose) {
 		return;
 	}
 	for (auto pc = _program.begin(); pc != _program.end(); ++pc) {
-		std::cout << *pc;
-		if (pc != _program.end()-1) {
+		std::cout << pc->second;
+		if (pc->second != _program.end()->second-1) {
 			std::cout << ",";
 		}
 	}
 	std::cout << std::endl << std::endl;
 }
 
-int MoonComputer::doOperation(const int op, const int first, const bool firstMode,
-			      const int second, const bool secondMode, const int result,
-			      std::vector<int>::iterator &pc, int &_var, progResult_t& pRes)
+int MoonComputer::assignOperands(long long &operand, const int mode, const long long value)
+{
+	if (mode == 0) {
+		operand = _program[value];
+	}
+	else if (mode == 1) {
+		operand = value;
+	}
+	else if (mode == 2) {
+		operand = _program[_relBase + value];
+	}
+	else {
+		return -1;
+	}
+	return 0;
+}
+
+int MoonComputer::doOperation(const int op, const long long first, const int firstMode,
+			      const long long second, const int secondMode, const long long result,
+			      const int resultMode, std::map<long long, long long>::iterator &pc,
+			      progResult_t& pRes)
 {
 	if (op == 1) {
-		int firstParam = firstMode ? first : _program[first];
-		int secondParam = secondMode ? second : _program[second];
-		_program[result] = firstParam + secondParam;
+		long long firstParam, secondParam;
+		if (assignOperands(firstParam, firstMode, first) != 0)
+			return -1;
+		if (assignOperands(secondParam, secondMode, second) != 0)
+			return -1;
+
+		if (resultMode == 0) {
+			_program[result] = firstParam + secondParam;
+		}
+		else if (resultMode == 2) {
+			_program[_relBase + result] = firstParam + secondParam;
+		}
+		else {
+			return -1;
+		}
 		return 0;
 	}
 	else if (op == 2) {
-		int firstParam = firstMode ? first : _program[first];
-		int secondParam = secondMode ? second : _program[second];
-		_program[result] = firstParam * secondParam;
+		long long firstParam, secondParam;
+		if (assignOperands(firstParam, firstMode, first) != 0)
+			return -1;
+		if (assignOperands(secondParam, secondMode, second) != 0)
+			return -1;
+
+		if (resultMode == 0) {
+			_program[result] = firstParam * secondParam;
+		}
+		else if (resultMode == 2) {
+			_program[_relBase + result] = firstParam * secondParam;
+		}
+		else {
+			return -1;
+		}
 		return 0;
 	}
 	else if (op == 3) {
 		if (!_autoInsert) {
 			std::cout << "Enter input: ";
-			std::cin >> _program[first];
+			long long input;
+			std::cin >> input;
+			if (firstMode == 0) {
+				_program[first] = input;
+			}
+			else if (firstMode == 2) {
+				_program[_relBase + first] = input;
+			}
+			else {
+				return -1;
+			}
 		} else {
 			if (_inputs.empty()) {
 				return 2;
 			}
-			_program[first] = _inputs[0];
+			if (firstMode == 0) {
+				_program[first] = _inputs[0];
+			}
+			else if (firstMode == 2) {
+				_program[_relBase + first] = _inputs[0];
+			}
+			else {
+				return -1;
+			}
 			_inputs.erase(_inputs.begin());
 			return 0;
 		}
@@ -77,32 +110,58 @@ int MoonComputer::doOperation(const int op, const int first, const bool firstMod
 		return 0;
 	}
 	else if (op == 4) {
+		long long firstParam;
+		assignOperands(firstParam, firstMode, first);
 		if (_showOutput) {
-			std::cout << (firstMode ? first : _program[first]);
+			std::cout << firstParam;
 			std::cout << std::endl;
 		}
-		pRes.push_back(firstMode ? first : _program[first]);
+		pRes.push_back(firstParam);
 		return 0;
 	}
 	else if (op == 5 || op == 6) {
-		int firstParam = firstMode ? first : _program[first];
-		int secondParam = secondMode ? second : _program[second];
+		long long firstParam, secondParam;
+		assignOperands(firstParam, firstMode, first);
+		assignOperands(secondParam, secondMode, second);
 		if ((op == 5) ? firstParam : !firstParam) {
-			pc = _program.begin() + secondParam;
-			_var = 4 - std::distance(_program.begin(), pc) % 4;
+			pc = _program.find(secondParam);
+			_var = 4 - pc->first % 4;
 			--pc;
 		}
 		return 0;
 	}
 	else if (op == 7 || op == 8) {
-		int firstParam = firstMode ? first : _program[first];
-		int secondParam = secondMode ? second : _program[second];
+		long long firstParam, secondParam;
+		assignOperands(firstParam, firstMode, first);
+		assignOperands(secondParam, secondMode, second);
 		if ((op == 7) ? (firstParam < secondParam) : (firstParam == secondParam)) {
-			_program[result] = 1;
+			if (resultMode == 0) {
+				_program[result] = 1;
+			}
+			else if (resultMode == 2) {
+				_program[_relBase + result] = 1;
+			}
+			else {
+				return -1;
+			}
 		}
 		else {
-			_program[result] = 0;
+			if (resultMode == 0) {
+				_program[result] = 0;
+			}
+			else if (resultMode == 2) {
+				_program[_relBase + result] = 0;
+			}
+			else {
+				return -1;
+			}
 		}
+		return 0;
+	}
+	else if (op == 9) {
+		long long firstParam;
+		assignOperands(firstParam, firstMode, first);
+		_relBase += firstParam;
 		return 0;
 	}
 	else if (op == 99) {
@@ -123,6 +182,9 @@ int MoonComputer::doOperation(const int op, const int first, const bool firstMod
 	}
 }
 
+// -----------------------------------------------------------------
+// Public
+// -----------------------------------------------------------------
 void MoonComputer::mangleTheCode(const mangler_t& mangler)
 {
 	for (mangler_t::const_iterator it = mangler.begin(); it != mangler.end(); ++it) {
@@ -139,47 +201,42 @@ int MoonComputer::runMoonProgram()
 int MoonComputer::runMoonProgram(progResult_t &programResult)
 {
 	int operation;
-	int firstOperand;
+	long long firstOperand;
 	int firstMode;
-	int secondOperand;
+	long long secondOperand;
 	int secondMode;
-	int result;
+	long long result;
+	int resultMode;
 	int ret;
 	bool programLoaded = false;
 
-	for (auto pc = _program.begin() + _haltPc; pc != _program.end(); ++pc) {
-		if ((pc - _program.begin() + _var) % 4 == 0) {
-			operation = _program.at(pc - _program.begin());
-			if (!(operation / 10000 % 10)) {
-				firstMode = operation / 100 % 10;
-				secondMode = operation / 1000 % 10;
-				operation %= 100;
-			}
-			else {
-				std::cout << "Non-supported 3rd parameter mode, halting"
-					  << std::endl;
-				return -1;
-			}
+	for (auto pc = _program.find(_haltPc); pc != _program.end(); ++pc) {
+		if ((pc->first + _var) % 4 == 0) {
+			operation = _program[pc->first];
+			firstMode = operation / 100 % 10;
+			secondMode = operation / 1000 % 10;
+			resultMode = operation / 10000 % 10;
+			operation %= 100;
 			programLoaded = (operation == 99);
 		}
-		else if ((pc - _program.begin() + _var) % 4 == 1) {
-			firstOperand = _program.at(pc - _program.begin());
-			programLoaded = (operation == 3 || operation == 4);
+		else if ((pc->first + _var) % 4 == 1) {
+			firstOperand = _program[pc->first];
+			programLoaded = (operation == 3 || operation == 4 || operation == 9);
 			if (programLoaded) {
 				_var += 2;
 				_var %= 4;
 			}
 		}
-		else if ((pc - _program.begin() + _var) % 4 == 2) {
-			secondOperand = _program.at(pc - _program.begin());
+		else if ((pc->first + _var) % 4 == 2) {
+			secondOperand = _program[pc->first];
 			programLoaded = (operation == 5 || operation == 6);
 			if (programLoaded) {
 				++_var;
 				_var %= 4;
 			}
 		}
-		else if ((pc - _program.begin() + _var) % 4 == 3) {
-			result = _program.at(pc - _program.begin());
+		else if ((pc->first + _var) % 4 == 3) {
+			result = _program[pc->first];
 			programLoaded = true;
 		}
 		if (!programLoaded) {
@@ -187,9 +244,10 @@ int MoonComputer::runMoonProgram(progResult_t &programResult)
 		}
 
 		ret = MoonComputer::doOperation(operation, firstOperand, firstMode, secondOperand,
-						secondMode, result, pc, _var, programResult);
-		if (ret == -1) {
-			int index = std::distance(_program.begin(), pc+1);
+						secondMode, result, resultMode, pc,
+						programResult);
+		if (ret == -1 && !_testMode) {
+			long long index = pc->first + 1;
 			if (_verbose) {
 				std::cout << "Program crashed at " << index / 4 + 1 <<
 					     ". instruction" << std::endl;
@@ -198,7 +256,7 @@ int MoonComputer::runMoonProgram(progResult_t &programResult)
 		}
 		else if (ret == 1) {
 			programResult.insert(programResult.begin(), _program[0]);
-			int index = std::distance(_program.begin(), pc+1);
+			long long index = pc->first + 1;
 			if (_verbose) {
 				std::cout << "Program ended at " << index / 4 <<
 					     ". instruction" << std::endl;
@@ -209,7 +267,7 @@ int MoonComputer::runMoonProgram(progResult_t &programResult)
 			if (_verbose) {
 				std::cout << "Waiting for new input" << std::endl;
 			}
-			_haltPc = std::distance(_program.begin(), pc-1);
+			_haltPc = pc->first - 1;
 			_var += 2;
 			_var %= 4;
 			return 1;
@@ -224,20 +282,22 @@ void MoonComputer::openProgramFile(program_t &program)
 {
 	std::ifstream iFile;
 	std::stringbuf sb;
+	long long i = 0;
 
 	TaskExecutor::openFile(iFile);
 	while (!iFile.eof()) {
 		iFile.get(sb, ',');
 		iFile.get();
-		const int intCode = std::stoi(sb.str());
-		program.push_back(intCode);
+		const long long intCode = std::stoll(sb.str());
+		program.insert(std::make_pair(i, intCode));
+		++i;
 
 		sb.str("");
 		sb.str().clear();
 	}
 }
 
-void MoonComputer::setAutoInsert(bool flag, std::vector<int>* inputs)
+void MoonComputer::setAutoInsert(bool flag, std::vector<long long>* inputs)
 {
 	_autoInsert = flag;
 	if (!flag)

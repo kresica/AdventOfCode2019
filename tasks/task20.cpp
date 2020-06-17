@@ -13,6 +13,7 @@ void Task20::execute()
 {
 	std::ifstream iFile;
 	std::stringbuf sb;
+	long long i = 0;
 
 	program_t program;
 
@@ -20,8 +21,9 @@ void Task20::execute()
 	while (!iFile.eof()) {
 		iFile.get(sb, ',');
 		iFile.get();
-		const int intCode = std::stoi(sb.str());
-		program.push_back(intCode);
+		const long long intCode = std::stoll(sb.str());
+		program.insert(std::make_pair(i, intCode));
+		++i;
 
 		sb.str("");
 		sb.str().clear();
