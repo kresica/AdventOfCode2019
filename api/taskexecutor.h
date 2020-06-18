@@ -14,10 +14,10 @@
 // Not thread safe!
 #define DO_ONCE(expr) \
 	{ \
-		static bool done = false; \
-		if (!done) { \
+		static std::list<std::string> done; \
+		if (std::find(done.begin(), done.end(), #expr) == done.end()) { \
+			done.insert(done.end(), #expr); \
 			expr; \
-			done = true; \
 		} \
 	}
 

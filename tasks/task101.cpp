@@ -11,5 +11,9 @@ std::shared_ptr<TaskCreator> Task101::create()
 void Task101::execute()
 {
 	AsteroidStation::makeAsteroidList(getFilename());
+	AsteroidStation::turnOnAsteroidLaser();
+	asteroidList_t asteroidListSorted = AsteroidStation::getAsteroidListSorted();
 
+	auto it = asteroidListSorted.begin() + 199;
+	std::cout << "200th vaporized asteroid is: " << it->first * 100 + it->second << std::endl;
 }
